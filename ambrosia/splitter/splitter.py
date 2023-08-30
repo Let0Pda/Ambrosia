@@ -311,7 +311,7 @@ class Splitter(yaml.YAMLObject, ABToolAbstract, metaclass=ABMetaClass):
                 groups_number = 2
                 log.info_log("Groups number was set to 2 because part splitting variable set")
 
-        if method in ("metric", "dim_decrease"):
+        if method in {"metric", "dim_decrease"}:
             # For methods use metric/cluster/unsupervised approach
             arguments_choice["fit_columns"] = (self.__fit_columns, fit_columns)
 

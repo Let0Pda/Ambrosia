@@ -20,9 +20,9 @@ class TtestIndCriterionSpark(ABStatCriterion):
     def __init__(self, cache_parameters: bool = False):
         self.cache_parameters = cache_parameters
         self.parameters_are_cached: bool = False
-        self.data_stats = {}
-        for param in TtestIndCriterionSpark.__data_parameters:
-            self.data_stats[param] = None
+        self.data_stats = {
+            param: None for param in TtestIndCriterionSpark.__data_parameters
+        }
 
     def __calc_and_cache_data_parameters(
         self, group_a: types.SparkDataFrame, group_b: types.SparkDataFrame, column: types.ColumnNameType

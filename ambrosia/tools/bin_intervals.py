@@ -331,15 +331,26 @@ class BinomTwoSampleCI(ABC):
         ]
         pvalue_pkg.check_alternative(alternative)
         significance_level = pvalue_pkg.corrected_alpha(1 - confidence_level, alternative)
-        if interval_type == "wald":
-            left_ci, right_ci = BinomTwoSampleCI.__wald_ci(a_success, b_success, a_trials, b_trials, significance_level)
-        elif interval_type == "yule":
-            left_ci, right_ci = BinomTwoSampleCI.__yule_ci(
-                a_success, b_success, a_trials, b_trials, significance_level, modified=False
+        if interval_type == "agresti":
+            left_ci, right_ci = BinomTwoSampleCI.__bayes_conjugate_beta(
+                a_success, b_success, a_trials, b_trials, 1, 1, significance_level
             )
-        elif interval_type == "yule_modif":
-            left_ci, right_ci = BinomTwoSampleCI.__yule_ci(
-                a_success, b_success, a_trials, b_trials, significance_level, modified=True
+        elif interval_type == "bayes_beta":
+            args_correctness = (
+                (n_success_conjugate is not None)
+                and (n_failure_conjugate is not None)
+                and (n_success_conjugate > 0)
+                and (n_failure_conjugate > 0)
+            )
+            if not args_correctness:
+                error_beta_params: str = "Pass correct params n_success_conjugate, n_faliure_conjugate"
+                raise ValueError(error_beta_params)
+            left_ci, right_ci = BinomTwoSampleCI.__bayes_conjugate_beta(
+                a_success, b_success, a_trials, b_trials, n_success_conjugate, n_failure_conjugate, significance_level
+            )
+        elif interval_type == "jeffrey":
+            left_ci, right_ci = BinomTwoSampleCI.__bayes_conjugate_beta(
+                a_success, b_success, a_trials, b_trials, 0.5, 0.5, significance_level
             )
         elif interval_type == "newcombe":
             left_ci, right_ci = BinomTwoSampleCI.__newcombe_ci(
@@ -349,26 +360,15 @@ class BinomTwoSampleCI(ABC):
             left_ci, right_ci = BinomTwoSampleCI.__recentered_ci(
                 a_success, b_success, a_trials, b_trials, significance_level
             )
-        elif interval_type == "jeffrey":
-            left_ci, right_ci = BinomTwoSampleCI.__bayes_conjugate_beta(
-                a_success, b_success, a_trials, b_trials, 0.5, 0.5, significance_level
+        elif interval_type == "wald":
+            left_ci, right_ci = BinomTwoSampleCI.__wald_ci(a_success, b_success, a_trials, b_trials, significance_level)
+        elif interval_type == "yule":
+            left_ci, right_ci = BinomTwoSampleCI.__yule_ci(
+                a_success, b_success, a_trials, b_trials, significance_level, modified=False
             )
-        elif interval_type == "agresti":
-            left_ci, right_ci = BinomTwoSampleCI.__bayes_conjugate_beta(
-                a_success, b_success, a_trials, b_trials, 1, 1, significance_level
-            )
-        elif interval_type == "bayes_beta":
-            error_beta_params: str = "Pass correct params n_success_conjugate, n_faliure_conjugate"
-            args_correctness = (
-                (n_success_conjugate is not None)
-                and (n_failure_conjugate is not None)
-                and (n_success_conjugate > 0)
-                and (n_failure_conjugate > 0)
-            )
-            if not args_correctness:
-                raise ValueError(error_beta_params)
-            left_ci, right_ci = BinomTwoSampleCI.__bayes_conjugate_beta(
-                a_success, b_success, a_trials, b_trials, n_success_conjugate, n_failure_conjugate, significance_level
+        elif interval_type == "yule_modif":
+            left_ci, right_ci = BinomTwoSampleCI.__yule_ci(
+                a_success, b_success, a_trials, b_trials, significance_level, modified=True
             )
         else:
             algo_type_error: str = f'Choose one from accepted methods, from - {", ".join(valid_types)}'
@@ -518,7 +518,9 @@ def get_table_power_on_size_and_delta(
             }
             conf_interval: types.ManyIntervalType = BinomTwoSampleCI.confidence_interval(**binom_kwargs)
             power: np.ndarray = helper_dir.__helper_calc_empirical_power(conf_interval)
-            table.loc[(alpha, delta), trials] = [str(round(power_val * 100, 1)) + "%" for power_val in power]
+            table.loc[(alpha, delta), trials] = [
+                f"{str(round(power_val * 100, 1))}%" for power_val in power
+            ]
     table_title: str = r"$1 - \beta$: power of criterion, " + (
         r"$p_a-p_b=\Delta$" if delta_values else r"$p_a\delta=p_b$"
     )
@@ -651,7 +653,7 @@ def iterate_for_delta(
                     power=power,
                 )
                 if delta is not None and delta_type == "relative":
-                    delta = str(round(abs(delta) / p_a * 100, 2)) + "%"
+                    delta = f"{str(round(abs(delta) / p_a * 100, 2))}%"
 
                 table.loc[(alpha, second_error), trials] = delta
     return table

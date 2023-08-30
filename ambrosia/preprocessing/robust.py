@@ -111,13 +111,12 @@ class RobustPreprocessor(AbstractFittableTransformer):
             Dictionary with prefitted params.
         """
         for parameter in self.params:
-            if parameter in params:
-                if parameter in RobustPreprocessor.non_serializable_params:
-                    self.params[parameter] = np.array(params[parameter])
-                else:
-                    self.params[parameter] = params[parameter]
-            else:
+            if parameter not in params:
                 raise TypeError(f"params argument must contain: {parameter}")
+            if parameter in RobustPreprocessor.non_serializable_params:
+                self.params[parameter] = np.array(params[parameter])
+            else:
+                self.params[parameter] = params[parameter]
         self.fitted = True
 
     def __wrap_alpha(self, alpha: Union[float, Iterable]) -> np.ndarray:
@@ -344,13 +343,12 @@ class IQRPreprocessor(AbstractFittableTransformer):
             Dictionary with prefitted params.
         """
         for parameter in self.params:
-            if parameter in params:
-                if parameter in IQRPreprocessor.non_serializable_params:
-                    self.params[parameter] = np.array(params[parameter])
-                else:
-                    self.params[parameter] = params[parameter]
-            else:
+            if parameter not in params:
                 raise TypeError(f"params argument must contain: {parameter}")
+            if parameter in IQRPreprocessor.non_serializable_params:
+                self.params[parameter] = np.array(params[parameter])
+            else:
+                self.params[parameter] = params[parameter]
         self.fitted = True
 
     def __calculate_params(

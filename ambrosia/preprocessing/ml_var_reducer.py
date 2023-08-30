@@ -115,10 +115,7 @@ class MLVarianceReducer(AbstractVarianceReducer):
         """
         Support method for scorer setting.
         """
-        if scores is not None:
-            self.score = scores
-        else:
-            self.score = {"MSE": mean_squared_error}
+        self.score = scores if scores is not None else {"MSE": mean_squared_error}
 
     def __create_model(self) -> None:
         """
@@ -157,8 +154,7 @@ class MLVarianceReducer(AbstractVarianceReducer):
         Class must be fitted.
         """
         self._check_fitted()
-        y_hat = y - self.model.predict(X) + self.params["train_bias"]
-        return y_hat
+        return y - self.model.predict(X) + self.params["train_bias"]
 
     def _verbose_score(self, dataframe: pd.DataFrame, prediction: np.ndarray) -> None:
         for name, scorer in self.score.items():
@@ -203,7 +199,7 @@ class MLVarianceReducer(AbstractVarianceReducer):
         if "model" in params:
             self.model = params["model"]
         else:
-            raise TypeError(f"params argument must contain: {'model'}")
+            raise TypeError('params argument must contain: model')
         self.fitted = True
 
     def store_params(self, config_store_path: Path, model_store_path: Path) -> None:

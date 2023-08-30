@@ -36,7 +36,7 @@ def __helper_calc_empirical_power(conf_interval: types.ManyIntervalType) -> np.n
         power / first type error for each parameter in parameter grid
     """
     left, right = conf_interval
-    mask: np.ndarray = (left <= 0) & (0 <= right)
+    mask: np.ndarray = (left <= 0) & (right >= 0)
     power: np.ndarray = 1 - mask.mean(axis=0)
     return power
 

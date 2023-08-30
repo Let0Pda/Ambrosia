@@ -159,11 +159,11 @@ class AggregatePreprocessor(AbstractFittableTransformer):
         if "groupby_columns" in params:
             self.groupby_columns = params["groupby_columns"]
         else:
-            raise TypeError(f"params argument must contain: {'column_names'}")
+            raise TypeError('params argument must contain: column_names')
         if "aggregation_params" in params:
             self.agg_params = params["aggregation_params"]
         else:
-            raise TypeError(f"params argument must contain: {'aggregation_params'}")
+            raise TypeError('params argument must contain: aggregation_params')
         self.fitted = True
 
     def fit(

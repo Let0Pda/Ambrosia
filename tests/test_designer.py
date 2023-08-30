@@ -230,13 +230,16 @@ def test_more_alpha_less_size(designer_ltv, method, metric):
     """
     This test was added because argument first error was missed in designer binary method
     """
-    results = []
-    for alpha in (0.2, 0.4, 0.6):
-        results.append(
-            designer_ltv.run(
-                to_design="size", method=method, metrics=metric, first_type_errors=alpha, effects=1.2
-            ).iloc[0, 0]
-        )
+    results = [
+        designer_ltv.run(
+            to_design="size",
+            method=method,
+            metrics=metric,
+            first_type_errors=alpha,
+            effects=1.2,
+        ).iloc[0, 0]
+        for alpha in (0.2, 0.4, 0.6)
+    ]
     res02, res04, res06 = results
     assert res02 > res04
     assert res04 > res06

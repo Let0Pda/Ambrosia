@@ -101,8 +101,7 @@ def encode_id(enc_id: Any, salt: str, hash_function: Union[str, Callable] = "sha
     else:
         raise AttributeError("hexdigest() method must be implemented in hash_function")
     enc_id_hashed = enc_id_hashed[:LEN_HASH]
-    enc_id_hashed = int(enc_id_hashed, HASH_BASE)
-    return enc_id_hashed
+    return int(enc_id_hashed, HASH_BASE)
 
 
 def get_simple_split(
@@ -286,9 +285,9 @@ def get_dim_decrease_split(
     groups["label"] = labels
     groups.sort_values(by="label", inplace=True)
     groups = groups[: groups_number * group_size]
-    result: List[np.ndarray, np.ndarray] = []
-    for j in range(groups_number):
-        result.append(groups.index[j::groups_number])
+    result: List[np.ndarray, np.ndarray] = [
+        groups.index[j::groups_number] for j in range(groups_number)
+    ]
     return result
 
 
@@ -310,10 +309,9 @@ def make_labels_for_groups(groups_number: int) -> List[str]:
         raise NotImplementedError("Groups number should be <= 52")
     if groups_number <= alphabet_size:
         return [chr(ord("A") + j) for j in range(groups_number)]
-    else:
-        first_part: List[str] = [chr(ord("A") + j) for j in range(alphabet_size)]
-        second_part: List[str] = [chr(ord("a") + j) for j in range(groups_number - alphabet_size)]
-        return first_part + second_part
+    first_part: List[str] = [chr(ord("A") + j) for j in range(alphabet_size)]
+    second_part: List[str] = [chr(ord("a") + j) for j in range(groups_number - alphabet_size)]
+    return first_part + second_part
 
 
 def add_to_required_size(
@@ -404,11 +402,11 @@ def get_split(
     elif not stratifier.is_trained():
         stratifier.fit(dataframe, strat_columns)
 
-    error_size_msg: str = "Total size for all groups is bigger than total shape of table"
     cond_empty_b: bool = group_b_indices is None and groups_number * groups_size > stratifier.size()
     cond_b_id: bool = group_b_indices is not None and groups_number * len(group_b_indices) > stratifier.size()
 
     if cond_empty_b or cond_b_id:
+        error_size_msg: str = "Total size for all groups is bigger than total shape of table"
         raise ValueError(error_size_msg)
 
     # Can't split for more than two groups with fixed test group

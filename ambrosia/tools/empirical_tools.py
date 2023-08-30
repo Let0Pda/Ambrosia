@@ -220,8 +220,7 @@ def get_bs_sample_stat(
     bs_stat_b = get_bs_stat(sample[sample_size_a:], stat=stat, N=N, random_seed=seed_sequence[1])
     bs_stat_diff = bs_stat_b - bs_stat_a
     left_side, right_side = np.percentile(bs_stat_diff, [100 * alpha / 2.0, 100 * (1 - alpha / 2.0)])
-    overlap = not left_side <= 0 <= right_side
-    return overlap
+    return not left_side <= 0 <= right_side
 
 
 def make_bootstrap(
@@ -279,7 +278,7 @@ def make_bootstrap(
             )
             for sample_num, seed in iterator
         )
-        test_result = np.mean(results_parallel)
+        return np.mean(results_parallel)
     else:
         over_group_statistic = []
         rng = range(num_samples)
@@ -295,8 +294,7 @@ def make_bootstrap(
                 random_seed=seed,
             )
             over_group_statistic.append(overlap)
-        test_result = np.mean(over_group_statistic)
-    return test_result
+        return np.mean(over_group_statistic)
 
 
 class BootstrapStats:

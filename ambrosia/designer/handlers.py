@@ -92,9 +92,8 @@ def calc_prob_control_class(table: types.PassedDataType, metric: types.MetricNam
     if isinstance(table, pd.DataFrame):
         if not set(table[metric].unique()).issubset({0, 1}):
             warnings.warn(warning_message_values)
-        p_a = table[metric].mean()
+        return table[metric].mean()
     else:
         if not set(table.select(metric).distinct().toPandas()[metric]).issubset({0, 1}):
             warnings.warn(warning_message_values)
-        p_a = table.select(spark_functions.mean(metric)).collect()[0][0]
-    return p_a
+        return table.select(spark_functions.mean(metric)).collect()[0][0]

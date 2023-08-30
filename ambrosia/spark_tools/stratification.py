@@ -49,7 +49,7 @@ class Stratification(ab_abstract.StratificationUtil):
         Returns size of each stratification group
         """
         self._check_fit()
-        sizes: Dict[Any, int] = {}
-        for value, table in self.strats.items():
-            sizes[value] = table.count()
+        sizes: Dict[Any, int] = {
+            value: table.count() for value, table in self.strats.items()
+        }
         return sizes

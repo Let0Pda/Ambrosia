@@ -51,11 +51,10 @@ def check_encode_alternative(alternative: str) -> str:
     Check the correctness of the alternative and encode for use in statsmodels api.
     """
     alternatives: Set = {"two-sided", "greater", "less"}
-    statsmodels_alternatives_encoding: Dict = {"two-sided": "two-sided", "greater": "larger", "less": "smaller"}
     if alternative not in alternatives:
         raise ValueError(f"Alternative must be one of '{alternatives}'.")
-    else:
-        return statsmodels_alternatives_encoding[alternative]
+    statsmodels_alternatives_encoding: Dict = {"two-sided": "two-sided", "greater": "larger", "less": "smaller"}
+    return statsmodels_alternatives_encoding[alternative]
 
 
 def check_target_type(
@@ -232,8 +231,9 @@ def get_minimal_determinable_effect(
         ratio=groups_ratio,
         alternative=alternative,
     )
-    mde = destabilize_effect(stabilized_mde, mean, std, target_type, stabilizing_method)
-    return mde
+    return destabilize_effect(
+        stabilized_mde, mean, std, target_type, stabilizing_method
+    )
 
 
 def get_power(
@@ -501,7 +501,7 @@ def get_minimal_effects_table(
                     alternative=alternative,
                     stabilizing_method=stabilizing_method,
                 )
-                str_effect = str(np.round(effect * 100, ROUND_DIGITS_PERCENT)) + "%"
+                str_effect = f"{str(np.round(effect * 100, ROUND_DIGITS_PERCENT))}%"
                 if as_numeric:
                     df_results.loc[(sample_size,), (err,)] = round(effect, ROUND_DIGITS_TABLE) + 1
                 else:
@@ -631,7 +631,10 @@ def get_power_table(
     df_results : pd.DataFrame
         Table with  sample sizes for each effect and error from input data.
     """
-    effects_str = [str(round((effect - 1) * 100, ROUND_DIGITS_PERCENT)) + "%" for effect in effects]
+    effects_str = [
+        f"{str(round((effect - 1) * 100, ROUND_DIGITS_PERCENT))}%"
+        for effect in effects
+    ]
     multiindex = pd.MultiIndex.from_tuples(
         [(first_error, effect_str) for first_error in first_errors for effect_str in effects_str],
         names=["First type error", "Effect"],
@@ -653,7 +656,7 @@ def get_power_table(
             if as_numeric:
                 power = [np.round(p, ROUND_DIGITS_TABLE) for p in power]
             else:
-                power = [str(np.round(p * 100, ROUND_DIGITS_PERCENT)) + "%" for p in power]
+                power = [f"{str(np.round(p * 100, ROUND_DIGITS_PERCENT))}%" for p in power]
             powers.append(power)
     df_results = pd.DataFrame(
         np.vstack(powers),

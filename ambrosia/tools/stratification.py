@@ -104,9 +104,9 @@ class Stratification(ab_abstract.StratificationUtil):
         Returns sizes for each strat
         """
         self._check_fit()
-        sizes: Dict[Any, int] = {}
-        for value, table in self.strats.items():
-            sizes[value] = table.shape[0]
+        sizes: Dict[Any, int] = {
+            value: table.shape[0] for value, table in self.strats.items()
+        }
         return sizes
 
     @staticmethod
@@ -138,9 +138,9 @@ class Stratification(ab_abstract.StratificationUtil):
             return {ab_abstract.EmptyStratValue.NO_STRATIFICATION: (list(test_id), other_amount)}
 
         if id_column is not None:
-            error_column_name: str = f"""Column - {id_column},
-             is not in list of columns - {", ".join(self.dataframe.columns)}"""
             if id_column not in self.dataframe.columns:
+                error_column_name: str = f"""Column - {id_column},
+             is not in list of columns - {", ".join(self.dataframe.columns)}"""
                 raise ValueError(error_column_name)
         test_ids: Dict[Tuple, Tuple[List, int]] = {}
         for value, table in self.strats.items():

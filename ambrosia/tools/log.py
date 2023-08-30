@@ -40,8 +40,7 @@ class RobustLogger:
         """
         Verbose transormations to os.stdout.
         """
-        for metric in prev_stats.keys():
-            prev: float = prev_stats[metric]
+        for metric, prev in prev_stats.items():
             new: float = new_stats[metric]
             info_log(f"Change {metric} {name}: {prev:.4f} ===> {new:.4f}")
 

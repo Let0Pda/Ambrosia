@@ -78,8 +78,7 @@ class TtestIndCriterion(ABStatCriterion):
         left_ci: np.ndarray = center - quantiles * std_error
         right_ci: np.ndarray = center + quantiles * std_error
         left_ci, right_ci = pvalue_pkg.choose_from_bounds(left_ci, right_ci, alternative)
-        conf_intervals = list(zip(left_ci, right_ci))
-        return conf_intervals
+        return list(zip(left_ci, right_ci))
 
     def calculate_conf_interval(
         self,
@@ -155,8 +154,7 @@ class TtestRelCriterion(ABStatCriterion):
         left_ci: float = center - quantiles * std_error
         right_ci: float = center + quantiles * std_error
         left_ci, right_ci = pvalue_pkg.choose_from_bounds(left_ci, right_ci, alternative)
-        conf_intervals = list(zip(left_ci, right_ci))
-        return conf_intervals
+        return list(zip(left_ci, right_ci))
 
     def calculate_conf_interval(
         self,

@@ -71,10 +71,10 @@ class ABToolAbstract(ABC):
         """
         chosen_args: types._UsageArgumentsType = {}
         for arg_name, [saved_argument, given_argument] in _args.items():
-            exception_message: str = f"""Value for argument - {arg_name},
-             was not set! Define it via setter method or pass as argument"""
             choice = given_argument if given_argument is not None else saved_argument
             if choice is None:
+                exception_message: str = f"""Value for argument - {arg_name},
+             was not set! Define it via setter method or pass as argument"""
                 raise ValueError(exception_message)
             chosen_args[arg_name] = choice
         return chosen_args
@@ -334,9 +334,7 @@ class StratificationUtil(ABC):
         size: int
             Total size of filtered data
         """
-        total_size: int = 0
-        for size in self.strat_sizes().values():
-            total_size += size
+        total_size: int = sum(self.strat_sizes().values())
         return total_size
 
     def get_group_sizes(self, group_size: int) -> Dict[Any, int]:
@@ -357,9 +355,12 @@ class StratificationUtil(ABC):
         """
         filtered_size: int = self.size()
         strat_sizes: Dict[Tuple, int] = self.strat_sizes()
-        group_sizes: Dict[Tuple, int] = {}
-        for strat_value in self.strats:
-            group_sizes[strat_value] = int(np.floor(group_size * strat_sizes[strat_value] / filtered_size))
+        group_sizes: Dict[Tuple, int] = {
+            strat_value: int(
+                np.floor(group_size * strat_sizes[strat_value] / filtered_size)
+            )
+            for strat_value in self.strats
+        }
         return group_sizes
 
 
@@ -382,8 +383,7 @@ class ABStatCriterion(StatCriterion):
 
     @classmethod
     def _send_type_error_msg(cls):
-        error_msg = f"Choose effect_type from {cls.implemented_effect_types}"  # pylint: disable=E1101
-        return error_msg
+        return f"Choose effect_type from {cls.implemented_effect_types}"
 
     @abstractmethod
     def calculate_effect(self, group_a: Iterable[float], group_b: Iterable[float], effect_type: str) -> np.ndarray:

@@ -106,11 +106,11 @@ class BoxCoxTransformer(AbstractFittableTransformer):
         if "column_names" in params:
             self.column_names = params["column_names"]
         else:
-            raise TypeError(f"params argument must contain: {'column_names'}")
+            raise TypeError('params argument must contain: column_names')
         if "lambda_" in params:
             self.lambda_ = np.array(params["lambda_"])
         else:
-            raise TypeError(f"params argument must contain: {'lambda_'}")
+            raise TypeError('params argument must contain: lambda_')
         self.fitted = True
 
     def fit(
@@ -281,7 +281,7 @@ class LogTransformer(AbstractFittableTransformer):
         if "column_names" in params:
             self.column_names = params["column_names"]
         else:
-            raise TypeError(f"params argument must contain: {'column_names'}")
+            raise TypeError('params argument must contain: column_names')
         self.fitted = True
 
     def fit(

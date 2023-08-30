@@ -55,8 +55,7 @@ def add_data_pandas(dataframe: pd.DataFrame, splitted_dataframe: pd.DataFrame, g
     """
     additional_table: pd.DataFrame = dataframe.loc[dataframe.index.delete(splitted_dataframe.index)].copy()
     additional_table[GROUPS_COLUMN] = group_label
-    customized_table = pd.concat([splitted_dataframe, additional_table])
-    return customized_table
+    return pd.concat([splitted_dataframe, additional_table])
 
 
 def add_data_spark(
@@ -134,10 +133,7 @@ def handle_full_split(
     """
     Finish split dataframe according to split_factor.
     """
-    if split_factor < 0.5:
-        group_label = "B"
-    else:
-        group_label = "A"
+    group_label = "B" if split_factor < 0.5 else "A"
     return add_data_to_splitted(dataframe, splitted_dataframe, group_label, id_column)
 
 

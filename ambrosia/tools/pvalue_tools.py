@@ -37,15 +37,13 @@ def calculate_point_effect_by_delta_method(
     Applying the Delta Method in Metric Analytics: A Practical Guide with Novel Ideas.
     Alex Deng, Ulf Knoblich, Jiannan Lu. 2018
     """
-    if transformation == "fraction":
-        fraction_estimation: float = mean_b / mean_a
-        bias_correction: float = (mean_b / mean_a**3) * (var_group_a / mean_size) - (1.0 / mean_a**2) * (
-            covariance_ab / mean_size
-        )
-        point_estimate = fraction_estimation - 1 + bias_correction
-    else:
+    if transformation != "fraction":
         raise ValueError(f"Got unknown random variable transformation: {ADMISSIBLE_TRANSFORMATIONS}")
-    return point_estimate
+    fraction_estimation: float = mean_b / mean_a
+    bias_correction: float = (mean_b / mean_a**3) * (var_group_a / mean_size) - (1.0 / mean_a**2) * (
+        covariance_ab / mean_size
+    )
+    return fraction_estimation - 1 + bias_correction
 
 
 def calc_statistic_for_delta_method(
@@ -129,8 +127,8 @@ def check_alternative(alternative: str) -> None:
     Check correctness of alternative value
     """
     valid_alternatives: List[str] = ["two-sided", "less", "greater"]
-    problem = f"Incorrect alternative value - {alternative}, choose from two-sided, less, greater"
     if alternative not in valid_alternatives:
+        problem = f"Incorrect alternative value - {alternative}, choose from two-sided, less, greater"
         raise ValueError(problem)
 
 
@@ -158,7 +156,7 @@ def choose_from_bounds(
     amount: int = len(left_ci) if cond_many else 1
     if alternative == "greater":
         left_ci = np.ones(amount) * left_bound if cond_many else left_bound
-    if alternative == "less":
+    elif alternative == "less":
         right_ci = np.ones(amount) * right_bound if cond_many else right_bound
     return left_ci, right_ci
 

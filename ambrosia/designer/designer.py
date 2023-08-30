@@ -196,16 +196,10 @@ class Designer(yaml.YAMLObject, ABToolAbstract, metaclass=ABMetaClass):
             self.__beta = second_type_errors
 
     def set_sizes(self, sizes: types.SampleSizeType) -> None:
-        if isinstance(sizes, int):
-            self.__size = [sizes]
-        else:
-            self.__size = sizes
+        self.__size = [sizes] if isinstance(sizes, int) else sizes
 
     def set_effects(self, effects: types.EffectType) -> None:
-        if isinstance(effects, float):
-            self.__effect = [effects]
-        else:
-            self.__effect = effects
+        self.__effect = [effects] if isinstance(effects, float) else effects
 
     def set_dataframe(self, dataframe: types.PassedDataType) -> None:
         if isinstance(dataframe, str):
@@ -286,10 +280,7 @@ class Designer(yaml.YAMLObject, ABToolAbstract, metaclass=ABMetaClass):
                 kwargs["sample_sizes"] = args[SIZE]
                 kwargs["effects"] = args[EFFECT]
             result[metric_name] = Designer.__dataframe_handler(TheoryHandler(), label, **kwargs)
-        if len(args["metric"]) == 1:
-            return result[args["metric"][0]]
-        else:
-            return result
+        return result[args["metric"][0]] if len(args["metric"]) == 1 else result
 
     @staticmethod
     def __empiric_design(label: str, args: types._UsageArgumentsType, **kwargs) -> types.DesignerResult:
@@ -332,17 +323,13 @@ class Designer(yaml.YAMLObject, ABToolAbstract, metaclass=ABMetaClass):
                 kwargs["delta_relative_values"] = args[EFFECT]
                 kwargs["sample_sizes"] = args[SIZE]
                 result[metric_name] = bin_pkg.get_table_power_on_size_and_delta(**kwargs)
-        if len(args["metric"]) == 1:
-            return result[args["metric"][0]]
-        else:
-            return result
+        return result[args["metric"][0]] if len(args["metric"]) == 1 else result
 
     @staticmethod
     def __pre_design(label: str, args: types._UsageArgumentsType, **kwargs) -> types.DesignerResult:
         """
         Helper function for run() method logic.
         """
-        admissible_methods: List[str] = ["theory", "empiric", "binary"]
         if args["method"] == "theory":
             return Designer.__theory_design(label, args, **kwargs)
         elif args["method"] == "empiric":
@@ -350,6 +337,7 @@ class Designer(yaml.YAMLObject, ABToolAbstract, metaclass=ABMetaClass):
         elif args["method"] == "binary":
             return Designer.__binary_design(label, args, **kwargs)
         else:
+            admissible_methods: List[str] = ["theory", "empiric", "binary"]
             raise ValueError(f'Choose method from {", ".join(admissible_methods)}, got {args["method"]}')
 
     def run(

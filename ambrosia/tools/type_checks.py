@@ -53,10 +53,7 @@ def none_check_decorator(function):
 
     @functools.wraps(function)
     def wrapper(argument):
-        if argument is None:
-            return None
-        else:
-            return function(argument)
+        return None if argument is None else function(argument)
 
     return wrapper
 
@@ -96,10 +93,8 @@ def check_type_id_columns(id_columns: types.ColumnNamesType) -> types.ColumnName
 
 @none_check_decorator
 def check_type_group_size(groups_size: int) -> int:
-    if isinstance(groups_size, int):
+    if isinstance(groups_size, (int, float)):
         return groups_size
-    elif isinstance(groups_size, float):
-        return int(groups_size)
     else:
         raise TypeError("groups_size variable must be int or float")
 
@@ -142,32 +137,29 @@ def check_type_salt(salt: str) -> str:
 
 @none_check_decorator
 def check_split_method_value(split_method: str) -> str:
-    if isinstance(split_method, str):
-        if split_method in split_methods_list:
-            return split_method
-        else:
-            raise ValueError(f'Choose correct split method, from {", ".join(split_methods_list)}')
-    else:
+    if not isinstance(split_method, str):
         raise TypeError(f'method variable must be a string and from{", ".join(split_methods_list)}')
+    if split_method in split_methods_list:
+        return split_method
+    else:
+        raise ValueError(f'Choose correct split method, from {", ".join(split_methods_list)}')
 
 
 @none_check_decorator
 def check_metric_method_value(method_metric: str) -> None:
-    if isinstance(method_metric, str):
-        if method_metric in metric_methods_list:
-            return method_metric
-        else:
-            raise ValueError(f'Choose correct method_metric, from {", ".join(metric_methods_list)}')
-    else:
+    if not isinstance(method_metric, str):
         raise TypeError(f'method_metric variable must be a string and from{", ".join(metric_methods_list)}')
+    if method_metric in metric_methods_list:
+        return method_metric
+    else:
+        raise ValueError(f'Choose correct method_metric, from {", ".join(metric_methods_list)}')
 
 
 @none_check_decorator
 def check_norm_value(norm: str) -> None:
-    if isinstance(norm, str):
-        if norm in norm_list:
-            return norm
-        else:
-            raise ValueError(f'Choose correct norm, from {", ".join(norm_list)}')
-    else:
+    if not isinstance(norm, str):
         raise TypeError(f'norm variable must be a string and from{", ".join(norm_list)}')
+    if norm in norm_list:
+        return norm
+    else:
+        raise ValueError(f'Choose correct norm, from {", ".join(norm_list)}')

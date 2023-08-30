@@ -151,13 +151,12 @@ class Cuped(AbstractVarianceReducer):
             Dictionary with params.
         """
         for parameter in self.params:
-            if parameter in params:
-                if parameter in Cuped.non_serializable_params:
-                    self.params[parameter] = np.array(params[parameter])
-                else:
-                    self.params[parameter] = params[parameter]
-            else:
+            if parameter not in params:
                 raise TypeError(f"params argument must contain: {parameter}")
+            if parameter in Cuped.non_serializable_params:
+                self.params[parameter] = np.array(params[parameter])
+            else:
+                self.params[parameter] = params[parameter]
         self.fitted = True
 
     def fit(
@@ -388,13 +387,12 @@ class MultiCuped(AbstractVarianceReducer):
             Dictionary with params.
         """
         for parameter in self.params:
-            if parameter in params:
-                if parameter in MultiCuped.non_serializable_params:
-                    self.params[parameter] = np.array(params[parameter])
-                else:
-                    self.params[parameter] = params[parameter]
-            else:
+            if parameter not in params:
                 raise TypeError(f"params argument must contain: {parameter}")
+            if parameter in MultiCuped.non_serializable_params:
+                self.params[parameter] = np.array(params[parameter])
+            else:
+                self.params[parameter] = params[parameter]
         self.fitted = True
 
     def fit(

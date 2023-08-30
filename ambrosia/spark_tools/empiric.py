@@ -162,18 +162,17 @@ def calc_empiric_power(
                 for _ in range(bootstrap_size)
             )
     else:
-        exp_results = []
-        for _ in range(bootstrap_size):
-            exp_results.append(
-                evaluate_criterion(
-                    dataframe=dataframe,
-                    column=column,
-                    effect=effect,
-                    alpha=first_error,
-                    group_size=group_size,
-                    criterion=criterion,
-                )
+        exp_results = [
+            evaluate_criterion(
+                dataframe=dataframe,
+                column=column,
+                effect=effect,
+                alpha=first_error,
+                group_size=group_size,
+                criterion=criterion,
             )
+            for _ in range(bootstrap_size)
+        ]
     return np.mean(exp_results)
 
 

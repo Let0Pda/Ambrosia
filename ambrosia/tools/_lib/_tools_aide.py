@@ -50,9 +50,8 @@ def __helper_inject_effect(
     """
     Help to inject effect after sampling groups A/B.
     """
-    modified_samples_values: types.BootstrapedSamplesType = {}
-    for metric, sampled_metric in sampled_metrics.items():
-        modified_samples_values[metric] = tools_pkg.empirical_tools.inject_effect(
+    modified_samples_values: types.BootstrapedSamplesType = {
+        metric: tools_pkg.empirical_tools.inject_effect(
             sampled_metric,
             sample_size_a=sample_size_a,
             effect=effect,
@@ -60,6 +59,8 @@ def __helper_inject_effect(
             variation_factor=variation_factor,
             random_seed=random_seed,
         )
+        for metric, sampled_metric in sampled_metrics.items()
+    }
     return modified_samples_values
 
 

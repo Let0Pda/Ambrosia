@@ -189,8 +189,7 @@ def bootstrap_over_statistical_population(
             parallel=parallel,
             verbose=verbose,
         )
-        result_list.append(correctness)
-        result_list.append(power)
+        result_list.extend((correctness, power))
     return result_list
 
 
@@ -424,11 +423,7 @@ def optimize_mde(
             parallel=parallel,
             verbose=verbose,
         )[1]
-        if power_emp > power:
-            val = effect
-        else:
-            # Some value more than right bound
-            val = np.inf
+        val = effect if power_emp > power else np.inf
         return val
 
     upper_bound_effect: float = 2 ** aid_pkg.helper_bin_searh_upper_bound_effect(
@@ -1071,10 +1066,9 @@ def get_empirical_errors_table(
     columns_errors = []
     for metric in metrics:
         columns_errors += [metric + "_correctness", metric + "_power"]
-    report = pd.DataFrame(list(parameters), columns=columns_params).join(
+    return pd.DataFrame(list(parameters), columns=columns_params).join(
         pd.DataFrame(list(emprical_errors), columns=columns_errors)
     )
-    return report
 
 
 def get_empirical_table_sample_size(

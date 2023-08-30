@@ -278,11 +278,10 @@ class Tester(ABToolAbstract):
         if column_groups not in dataframe:
             raise ValueError(f"Column {column_groups}, is not in list of df columns")
 
-        if group_labels is not None:
-            if len(group_labels) < 2:
-                raise ValueError(f"Group labels must be at least 2, given {group_labels}")
-        else:
+        if group_labels is None:
             group_labels = dataframe[column_groups].unique()
+        elif len(group_labels) < 2:
+            raise ValueError(f"Group labels must be at least 2, given {group_labels}")
         experiment_results: types.ExperimentResults = {
             group_label: dataframe[dataframe[column_groups] == group_label] for group_label in group_labels
         }
@@ -332,8 +331,8 @@ class Tester(ABToolAbstract):
         """
         Function to handle binary intervals for testing.
         """
-        warning_message_values: str = "Values for metric is not binary, choose other method, for example ttest!"
         if not set(np.unique(group_a)).issubset({0, 1}) or not set(np.unique(group_b)).issubset({0, 1}):
+            warning_message_values: str = "Values for metric is not binary, choose other method, for example ttest!"
             warn(warning_message_values)
         if effect_type == "absolute":
             return binary_absolute_result(group_a, group_b, alpha, **kwargs)
@@ -455,8 +454,7 @@ class Tester(ABToolAbstract):
                         for left, right in tmp["confidence_interval"]
                     ]
                 answer.append(pd.DataFrame(tmp))
-        result_table = pd.concat(answer).reset_index(drop=True)
-        return result_table
+        return pd.concat(answer).reset_index(drop=True)
 
     def run(
         self,

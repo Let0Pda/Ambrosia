@@ -62,8 +62,6 @@ def test_groups_size(group_size, stratificator):
     """
     amount_of_strats: int = len(stratificator.strats)
     sizes = stratificator.get_group_sizes(group_size)
-    total_size: int = 0
-    for _, size in sizes.items():
-        total_size += size
+    total_size: int = sum(size for _, size in sizes.items())
     assert total_size - amount_of_strats <= group_size
     assert total_size + amount_of_strats >= group_size

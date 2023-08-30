@@ -28,8 +28,10 @@ def simple_binary_retention_table() -> pd.DataFrame:
     """
     Simple data frame, contains
     """
-    df = pd.DataFrame([[1, 2], [0, 3], [0, 1], [1, 22], [0, 9]], columns=["retention", "some metric"])
-    return df
+    return pd.DataFrame(
+        [[1, 2], [0, 3], [0, 1], [1, 22], [0, 9]],
+        columns=["retention", "some metric"],
+    )
 
 
 @pytest.fixture()
@@ -40,8 +42,7 @@ def ltv_and_retention_dataset() -> pd.DataFrame:
     Retention is bernoulli  with p = 0.4
     LTV (Life Time Value) is Exponential(scale = 100)
     """
-    df = pd.read_csv("./tests/test_data/ltv_retention.csv")
-    return df
+    return pd.read_csv("./tests/test_data/ltv_retention.csv")
 
 
 @pytest.fixture()
@@ -85,8 +86,7 @@ def results_ltv_retention_conversions() -> pd.DataFrame:
     """
     Table with results of experiment
     """
-    df_result = pd.read_csv("./tests/test_data/result_ltv_ret_conv.csv")
-    return df_result
+    return pd.read_csv("./tests/test_data/result_ltv_ret_conv.csv")
 
 
 @pytest.fixture()
@@ -109,8 +109,7 @@ def stratification_table() -> pd.DataFrame:
     """
     Table for stratification
     """
-    df = pd.read_csv("./tests/test_data/stratification_data.csv")
-    return df
+    return pd.read_csv("./tests/test_data/stratification_data.csv")
 
 
 @pytest.fixture()
@@ -130,13 +129,15 @@ def answer_ids_strat(stratificator) -> Dict:
     """
     Answer for test checking B group ids
     """
-    answer = {
+    return {
         ("Female", 0): ([129, 645, 860], 109),
         ("Female", 1): ([43, 258, 473, 688, 946, 989], 167),
         ("Male", 0): ([344, 602, 817, 903], 300),
-        ("Male", 1): ([0, 86, 172, 215, 301, 387, 430, 516, 559, 731, 774], 400),
+        ("Male", 1): (
+            [0, 86, 172, 215, 301, 387, 430, 516, 559, 731, 774],
+            400,
+        ),
     }
-    return answer
 
 
 @pytest.fixture()
@@ -154,13 +155,15 @@ def answer_ids_strat_column(stratificator) -> Dict:
     """
     Answer for test checking B group ids using id column
     """
-    answer = {
+    return {
         ("Female", 0): ([904, 4516, 6021], 109),
         ("Female", 1): ([302, 1807, 3312, 4817, 6623, 6924], 167),
         ("Male", 0): ([2409, 4215, 5720, 6322], 300),
-        ("Male", 1): ([1, 603, 1205, 1506, 2108, 2710, 3011, 3613, 3914, 5118, 5419], 400),
+        ("Male", 1): (
+            [1, 603, 1205, 1506, 2108, 2710, 3011, 3613, 3914, 5118, 5419],
+            400,
+        ),
     }
-    return answer
 
 
 @pytest.fixture()
@@ -180,7 +183,7 @@ def data_index_split() -> pd.DataFrame:
     Table with strange index
     """
     size: int = 1000
-    ind: List[str] = [str(x) + "a" for x in np.arange(size)]
+    ind: List[str] = [f"{str(x)}a" for x in np.arange(size)]
     metric_x: np.ndarray = sps.norm.rvs(loc=0, scale=2, size=size)
     metric_y: np.ndarray = sps.norm.rvs(loc=3, scale=5, size=size)
     return pd.DataFrame(np.array([metric_x, metric_y]).T, columns=["x", "y"], index=ind)
@@ -237,5 +240,4 @@ def robust_moments() -> pd.DataFrame:
     Columns and rows are transformed using various preprocessing techniques
     manually.
     """
-    df = pd.read_csv("tests/test_data/robust_moments.csv", index_col=0)
-    return df
+    return pd.read_csv("tests/test_data/robust_moments.csv", index_col=0)

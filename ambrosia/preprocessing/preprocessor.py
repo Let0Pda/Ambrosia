@@ -408,7 +408,7 @@ class Preprocessor:
                 transformations_counter[alias] += 1
             else:
                 transformations_counter[alias] = 1
-            alias += "_" + str(transformations_counter[alias])
+            alias += f"_{str(transformations_counter[alias])}"
             transformations_config[alias] = transformer.get_params_dict()
 
         with open(store_path, "w+") as file:

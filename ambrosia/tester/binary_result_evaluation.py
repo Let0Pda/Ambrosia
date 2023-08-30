@@ -124,7 +124,7 @@ def binary_relative_result(
     point_effect = np.mean(group_b) / np.mean(group_a) - 1
     function_interval = binary_relative_confidence_interval
     intervals = function_interval(1 - alpha, group_a, group_b, alternative=alternative)
-    confidence_intervals = [(left, right) for left, right in zip(*intervals)]
+    confidence_intervals = list(zip(*intervals))
     pvalue: float = pvalue_pkg.calculate_pvalue_by_interval(
         function_interval, 0, group_a=group_a, group_b=group_b, alternative=alternative
     )
